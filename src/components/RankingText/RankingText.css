@@ -1,0 +1,18 @@
+.rankingText {
+    display: flex;
+    justify-content: center;
+    margin: 5px;
+}
+
+h3 {
+    font-family: 'Consolas', Courier, monospace;
+    font-size: 3vw;
+}
+
+
+@media only screen and (max-width: 700px) {
+    h3 {
+        font-size: 10vw;
+        text-align: center;
+    }
+  }
