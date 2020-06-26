@@ -7,6 +7,9 @@ import RankingText from './components/RankingText/RankingText'
 import './App.css';
 import 'tachyons';
 import Clarifai from 'clarifai'
+import Signin from './components/Signin/Signin';
+import Register from './components/Register/Register';
+
 
 const FACE_DETECT_MODEL = 'e15d0f873e66047e579f90cf82c9882z'
 
@@ -21,7 +24,9 @@ class App extends Component {
 
     this.state = {
       imageUrl: null,
-      bounding_boxes: []
+      bounding_boxes: [],
+      route: 'home',
+      isLogged: false
     }
   }
 
@@ -43,31 +48,61 @@ class App extends Component {
       boundingBoxesCoordinates.push(data[i].region_info.bounding_box)
     }
 
-    this.setState({
-      bounding_boxes: boundingBoxesCoordinates
-    }
-    )
+    this.setState({ bounding_boxes: boundingBoxesCoordinates })
+
+  }
+
+  setRoute = (route) => {
+    this.setState({ route: route })
+  }
+
+  setIsLogged = () => {
 
   }
 
   render() {
 
-    const { imageUrl, bounding_boxes } = this.state
+    const { imageUrl, bounding_boxes, route, isLogged } = this.state
 
     return (
       <div className="App">
-        <Navigation />
-        <Logo />
-        <div className="container">
-          <RankingText />
-          <InputImageForm getImageUrl={this.handleImageUrl} callFaceRecognitionAPI={this.handleFaceRecognition} />
-          <FaceRecognition imageUrl={imageUrl} bounding_boxes={bounding_boxes} />
+        <Navigation setRoute={this.setRoute} isLogged={isLogged} />
 
-        </div>
+        {(route === 'signin') &&
+          <Signin
+            route={this.setRoute}
+            isLogged={this.setIsLogged}
+            resUserData={this.setResUserData}
+          />}
+
+        {(route === 'register') &&
+          <Register
+            route={this.setRoute}
+            isLogged={this.setIsLogged}
+            resUserData={this.setResUserData}
+          />}
+
+        {(route === 'home') &&
+          <div>
+            <Logo />
+            <div className="container">
+              <RankingText />
+              <InputImageForm
+                getImageUrl={this.handleImageUrl}
+                callFaceRecognitionAPI={this.handleFaceRecognition}
+              />
+              <FaceRecognition
+                imageUrl={imageUrl}
+                bounding_boxes={bounding_boxes}
+              />
+            </div>
+          </div>}
+
       </div>
-    );
-  }
 
+
+    )
+  }
 }
 
 export default App;

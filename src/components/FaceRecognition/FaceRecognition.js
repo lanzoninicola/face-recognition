@@ -16,7 +16,9 @@ const FaceRecognition = ({ imageUrl, bounding_boxes }) => {
 
     return (
         <div className="faceRecognition">
-            <img id="imageFaceRecognition" alt="faceRecognition" src={imageUrl} width="500px" height="500px"></img>
+            {imageUrl &&
+                <img id="imageFaceRecognition" alt="faceRecognition" src={imageUrl} width="500px" height="500px"></img>
+            }
             {bounding_boxes.length > 0 && boxes}
         </div>
     )

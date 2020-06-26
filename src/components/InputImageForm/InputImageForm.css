@@ -5,12 +5,18 @@
     margin-right: 10vw;
     border: solid 3px black;
     background: white;
-    height: 100px;
+    height: 140px;
 }
 
 .form-element {
     margin: auto;
+    text-align: center;
+}
+
+.form-element p {
+    font-family: 'Consolas', Courier, monospace;
     
+    margin-top: 5px;
 }
 
 input {
