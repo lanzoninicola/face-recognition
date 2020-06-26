@@ -4,7 +4,6 @@ import Logo from './components/Logo/Logo'
 import InputImageForm from './components/InputImageForm/InputImageForm'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import RankingText from './components/RankingText/RankingText'
-import './App.css';
 import 'tachyons';
 import Clarifai from 'clarifai'
 import Signin from './components/Signin/Signin';
@@ -65,7 +64,7 @@ class App extends Component {
     const { imageUrl, bounding_boxes, route, isLogged } = this.state
 
     return (
-      <div className="App">
+      <div>
         <Navigation setRoute={this.setRoute} isLogged={isLogged} />
 
         {(route === 'signin') &&
@@ -85,7 +84,7 @@ class App extends Component {
         {(route === 'home') &&
           <div>
             <Logo />
-            <div className="container">
+            <div>
               <RankingText />
               <InputImageForm
                 getImageUrl={this.handleImageUrl}

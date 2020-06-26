@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class Signin extends Component {
   constructor(props) {
@@ -17,12 +17,12 @@ class Signin extends Component {
     this.setState({ password: event.target.value });
   }
 
-  loginAttempt = (event) => {  
-    
+  loginAttempt = (event) => {
+
     //sending a request to verify the user
     fetch('http://localhost:3001/signin', {
       'method': 'POST',
-      'headers': {'Content-type': 'application/json'},
+      'headers': { 'Content-type': 'application/json' },
       'body': JSON.stringify(
         {
           email: this.state.email,
@@ -30,11 +30,11 @@ class Signin extends Component {
         }
       )
     })
-    // parses response to JSON
+      // parses response to JSON
       .then(response => response.json())
-    //handling the server response
+      //handling the server response
       .then(data => {
-        
+
         if (data.result === 'success') {
           this.props.route('home');
           this.props.isLogged(true);
@@ -74,13 +74,13 @@ class Signin extends Component {
 
           </fieldset>
           <div className="">
-            <button className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+            <button className="b ph3 pv2 input-reset ba b--black grow pointer f6 dib"
               type="text"
               onClick={this.loginAttempt}>
-            Sign in
+              Sign in
             </button>
           </div>
-         
+
         </div>
       </main>
     );
