@@ -5,55 +5,55 @@ class Register extends Component {
     super(props);
     this.state = {
       userState: {
-        name: '',
+        registrationUserData: {
+          name: '',
+          email: '',
+          password: ''
+        }
       }
     };
-    //in questo caso ho preferito NON usare lo state
-    this.user = {
-      name: '',
-      email: '',
-      password: ''
-    }
+
   }
 
-  setName = (event) => {
-    // this.setState({user: { name: event.target.value }});
-    this.user.name = event.target.value;
-    //console.log(this.name);
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    const newRegistrationUserData = { ...this.state.registrationUserData };
+    newRegistrationUserData[name] = value;
+    this.setState({ registrationUserData: newRegistrationUserData });
   }
 
-  setEmail = (event) => {
-    //this.setState({user: { email: event.target.value }});
-    this.user.email = event.target.value;
-  }
+  createNewUser = async () => {
 
-  setPassword = (event) => {
-    //this.setState({user: { password: event.target.value }});
-    this.user.password = event.target.value;
-  }
+    const { route, isLogged, resUserData } = this.props;
 
-  createNewUser = () => {
-    fetch('http://localhost:3001/register', {
+    const url = 'http://localhost:4000/register';
+    const bodyRequest = JSON.stringify(this.state.registrationUserData);
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(this.user)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        if (this.user.email === data.email) {
-          this.props.route('home');
-          this.props.isLogged(true);
-          this.props.resUserData(data);
-        }
-      })
+      body: bodyRequest
+    });
+
+    let responseData = await response.json();
+
+    const { result, user } = responseData;
+
+    console.log(responseData)
+
+    if (result === 'success') {
+      route('home');
+      isLogged(true);
+      resUserData(user);
+    }
 
   }
 
   render() {
+
     return (
-      <main className="pa4 black-80">
-        <div className="measure center">
+      <main className="black-80">
+        <div className="pa3 ma6 measure center">
 
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f4 fw6 ph0 mh0">Register</legend>
@@ -63,17 +63,17 @@ class Register extends Component {
                 type="text"
                 name="name"
                 id="name"
-                onChange={this.setName}
+                onChange={this.handleChange}
               />
-              <h1 className="m3">{this.user.name}</h1>
+
             </div>
             <div className="mt3">
               <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
               <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="email"
-                name="email-address"
+                name="email"
                 id="email-address"
-                onChange={this.setEmail}
+                onChange={this.handleChange}
               />
             </div>
             <div className="mv3">
@@ -82,7 +82,7 @@ class Register extends Component {
                 type="password"
                 name="password"
                 id="password"
-                onChange={this.setPassword}
+                onChange={this.handleChange}
               />
             </div>
 

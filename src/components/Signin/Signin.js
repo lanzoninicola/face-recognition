@@ -4,71 +4,71 @@ class Signin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: ''
+      signInData: {
+        signInEmail: '',
+        signInPassword: ''
+      }
     }
 
   }
-  setEmail = (event) => {
-    this.setState({ email: event.target.value });
+
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    const newSignInData = { ...this.state.signInData };
+    newSignInData[name] = value;
+    this.setState({ signInData: newSignInData });
   }
 
-  setPassword = (event) => {
-    this.setState({ password: event.target.value });
-  }
+  loginAttempt = async () => {
 
-  loginAttempt = (event) => {
+    const { signInEmail, signInPassword } = this.state.signInData;
+    const { route, isLogged, resUserData } = this.props;
 
-    //sending a request to verify the user
-    fetch('http://localhost:3001/signin', {
+    const url = 'http://localhost:4000/signin';
+    const requesBody = JSON.stringify({ signInEmail, signInPassword });
+
+    let response = await fetch(url, {
       'method': 'POST',
-      'headers': { 'Content-type': 'application/json' },
-      'body': JSON.stringify(
-        {
-          email: this.state.email,
-          password: this.state.password
-        }
-      )
-    })
-      // parses response to JSON
-      .then(response => response.json())
-      //handling the server response
-      .then(data => {
+      'headers': { 'Origin': 'http://localhost:4000', 'Content-type': 'application/json' },
+      'body': requesBody
+    });
 
-        if (data.result === 'success') {
-          this.props.route('home');
-          this.props.isLogged(true);
-          this.props.resUserData(data.user);
-        }
-      })
+    let responseData = await response.json();
 
-    this.props.route('signin');
+    const { result, userLogged } = responseData;
+
+    if (result === 'success') {
+      route('home');
+      isLogged(true);
+      resUserData(userLogged);
+    }
+
   }
 
   render() {
 
     return (
-      <main className="pa4 black-80">
-        <div className="measure center">
+      <main className="black-80">
+        <div className="pa3 ma6 measure center">
 
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f4 fw6 ph0 mh0">Sign In</legend>
             <div className="mt3">
               <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-              <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+              <input className="pa2 input-reset ba hover-bg-black hover-white w-100"
                 type="email"
-                name="email-address"
+                name="signInEmail"
                 id="email-address"
-                onChange={this.setEmail}
+                onChange={this.handleChange}
               />
             </div>
             <div className="mv3">
               <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-              <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+              <input className="b pa2 input-reset ba hover-bg-black hover-white w-100"
                 type="password"
-                name="password"
+                name="signInPassword"
                 id="password"
-                onChange={this.setPassword}
+                onChange={this.handleChange}
               />
             </div>
 

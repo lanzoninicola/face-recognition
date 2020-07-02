@@ -24,8 +24,14 @@ class App extends Component {
     this.state = {
       imageUrl: null,
       bounding_boxes: [],
-      route: 'home',
-      isLogged: false
+      route: 'signin',
+      isLogged: false,
+      userContext: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0
+      }
     }
   }
 
@@ -41,13 +47,38 @@ class App extends Component {
     let boundingBoxesCoordinates = []
 
     const response = await app.models.predict(FACE_DETECT_MODEL, this.state.imageUrl);
-    data = [...response.outputs[0].data.regions]
 
-    for (let i = 0; i < data.length; i++) {
-      boundingBoxesCoordinates.push(data[i].region_info.bounding_box)
+    if (response) {
+      data = [...response.outputs[0].data.regions]
+
+      for (let i = 0; i < data.length; i++) {
+        boundingBoxesCoordinates.push(data[i].region_info.bounding_box)
+      }
+
+      this.setState({ bounding_boxes: boundingBoxesCoordinates })
+
+      this.incrementRankOfUserId(this.state.userContext.id);
     }
 
-    this.setState({ bounding_boxes: boundingBoxesCoordinates })
+  }
+
+  incrementRankOfUserId = async (idUser) => {
+    console.log('incrementRankOfUserId - ', idUser)
+    const url = 'http://localhost:4000/image';
+    const requesBody = JSON.stringify({ idUser });
+
+    let response = await fetch(url, {
+      'method': 'POST',
+      'headers': { 'Content-type': 'application/json' },
+      'body': requesBody
+    });
+
+    let responseData = await response.json();
+
+    const userToRank = { ...this.state.userContext };
+    userToRank.entries = responseData.entries;
+    console.log(userToRank, this.state.userContext);
+    this.setState({ userContext: userToRank });
 
   }
 
@@ -55,17 +86,30 @@ class App extends Component {
     this.setState({ route: route })
   }
 
-  setIsLogged = () => {
+  setIsLogged = (isLogged) => {
+    this.setState({ isLogged: isLogged })
+  }
+
+  setResUserData = (user) => {
+    const userToRank = { ...this.state.userContext };
+    userToRank.id = user.id;
+    userToRank.name = user.name;
+    userToRank.email = user.email;
+    userToRank.entries = user.entries;
+    this.setState({ userContext: userToRank });
 
   }
 
   render() {
 
-    const { imageUrl, bounding_boxes, route, isLogged } = this.state
+    const { imageUrl, bounding_boxes, route, isLogged, userContext } = this.state
 
     return (
       <div>
-        <Navigation setRoute={this.setRoute} isLogged={isLogged} />
+        <Navigation
+          setRoute={this.setRoute}
+          isLogged={isLogged}
+        />
 
         {(route === 'signin') &&
           <Signin
@@ -85,9 +129,10 @@ class App extends Component {
           <div>
             <Logo />
             <div>
-              <RankingText />
+              <RankingText user={userContext} />
               <InputImageForm
                 getImageUrl={this.handleImageUrl}
+                disabledButton={imageUrl === null ? true : false}
                 callFaceRecognitionAPI={this.handleFaceRecognition}
               />
               <FaceRecognition
