@@ -15,8 +15,7 @@
 
 .form-element p {
     font-family: 'Consolas', Courier, monospace;
-    
-    margin-top: 5px;
+    margin: 5px;
 }
 
 input {
@@ -37,6 +36,11 @@ button {
 button:hover{
     background: rgb(138, 43, 226, 0.5);
 }
+
+button:disabled{
+    background: rgb(138, 43, 226, 0.2);
+}
+
 
 
 @media only screen and (max-width: 700px) {

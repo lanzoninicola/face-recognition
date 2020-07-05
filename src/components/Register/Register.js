@@ -64,6 +64,7 @@ class Register extends Component {
                 name="name"
                 id="name"
                 onChange={this.handleChange}
+                required
               />
 
             </div>
@@ -74,6 +75,7 @@ class Register extends Component {
                 name="email"
                 id="email-address"
                 onChange={this.handleChange}
+                required
               />
             </div>
             <div className="mv3">
@@ -83,6 +85,7 @@ class Register extends Component {
                 name="password"
                 id="password"
                 onChange={this.handleChange}
+                required
               />
             </div>
 

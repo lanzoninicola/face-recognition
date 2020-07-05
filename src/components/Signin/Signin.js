@@ -35,12 +35,12 @@ class Signin extends Component {
 
     let responseData = await response.json();
 
-    const { result, userLogged } = responseData;
+    const { result, userLoggedIn } = responseData;
 
     if (result === 'success') {
       route('home');
       isLogged(true);
-      resUserData(userLogged);
+      resUserData(userLoggedIn);
     }
 
   }

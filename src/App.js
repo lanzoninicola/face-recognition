@@ -5,16 +5,9 @@ import InputImageForm from './components/InputImageForm/InputImageForm'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import RankingText from './components/RankingText/RankingText'
 import 'tachyons';
-import Clarifai from 'clarifai'
+
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
-
-
-const FACE_DETECT_MODEL = 'e15d0f873e66047e579f90cf82c9882z'
-
-const app = new Clarifai.App({
-  apiKey: '4c89d78be6c74b88aaad378b09466151'
-});
 
 
 class App extends Component {
@@ -46,10 +39,23 @@ class App extends Component {
     let data = [];
     let boundingBoxesCoordinates = []
 
-    const response = await app.models.predict(FACE_DETECT_MODEL, this.state.imageUrl);
+    const url = 'http://localhost:4000/apifacerecognition';
+    const requesBody = JSON.stringify({
+      imageUrl: this.state.imageUrl
+    });
 
-    if (response) {
-      data = [...response.outputs[0].data.regions]
+    let response = await fetch(url, {
+      'method': 'POST',
+      'headers': { 'Content-type': 'application/json' },
+      'body': requesBody
+    });
+
+    let responseData = await response.json();
+
+    // console.log('app.js - handleFaceRecognition - ', responseData);
+
+    if (responseData) {
+      data = [...responseData.outputs[0].data.regions]
 
       for (let i = 0; i < data.length; i++) {
         boundingBoxesCoordinates.push(data[i].region_info.bounding_box)
@@ -63,7 +69,6 @@ class App extends Component {
   }
 
   incrementRankOfUserId = async (idUser) => {
-    console.log('incrementRankOfUserId - ', idUser)
     const url = 'http://localhost:4000/image';
     const requesBody = JSON.stringify({ idUser });
 
