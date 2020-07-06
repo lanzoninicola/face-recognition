@@ -26,7 +26,7 @@ class Register extends Component {
 
     const { route, isLogged, resUserData } = this.props;
 
-    const url = 'http://localhost:4000/register';
+    const url = 'https://face-recognition-api2020.herokuapp.com/register';
     const bodyRequest = JSON.stringify(this.state.registrationUserData);
 
     const response = await fetch(url, {

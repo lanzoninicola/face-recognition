@@ -24,7 +24,7 @@ class Signin extends Component {
     const { signInEmail, signInPassword } = this.state.signInData;
     const { route, isLogged, resUserData } = this.props;
 
-    const url = 'http://localhost:4000/signin';
+    const url = 'https://face-recognition-api2020.herokuapp.com/signin';
     const requesBody = JSON.stringify({ signInEmail, signInPassword });
 
     let response = await fetch(url, {
